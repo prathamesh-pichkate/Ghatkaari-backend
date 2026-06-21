@@ -10,6 +10,9 @@ import { errorHandler } from './middlewares/error.middleware';
 
 const app: Application = express();
 
+// Trust proxy (Required for Render & express-rate-limit)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet());
 app.use(
@@ -29,9 +32,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Logging
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+app.use(morgan('dev'));
 
 // Body Parsing
 app.use(express.json());
