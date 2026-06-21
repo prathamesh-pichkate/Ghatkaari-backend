@@ -9,12 +9,18 @@ const FROM_EMAIL = 'onboarding@resend.dev';
 
 export const sendEmailVerificationOTP = async (to: string, otp: string) => {
   try {
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
       subject: 'Verify your Email - Ghatkaari',
       html: `<h1>Email Verification</h1><p>Your OTP is: <strong>${otp}</strong></p><p>This OTP will expire in 5 minutes.</p>`,
     });
+
+    if (error) {
+      logger.error('Resend API Error:', error);
+      return;
+    }
+
     logger.info(`[MOCK EMAIL] OTP for ${to} is ${otp}`); // Helpful for local testing
   } catch (error) {
     logger.error('Failed to send email verification OTP', error);
