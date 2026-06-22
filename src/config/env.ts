@@ -12,6 +12,9 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().default('fallback_refresh_secret'),
   REDIS_URL: z.string().default('redis://localhost:6379'),
   RESEND_API_KEY: z.string().default('re_fallback'),
+  CLOUDINARY_CLOUD_NAME: z.string().default('fallback'),
+  CLOUDINARY_API_KEY: z.string().default('fallback'),
+  CLOUDINARY_API_SECRET: z.string().default('fallback'),
 });
 
 // Validate environment variables

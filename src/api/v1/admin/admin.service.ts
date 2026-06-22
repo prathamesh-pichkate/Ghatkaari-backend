@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { PartnerRequest, PartnerRequestStatus } from '../../../models/PartnerRequest';
 import { User, UserRole, AccountStatus } from '../../../models/User';
-import { Community } from '../../../models/Community';
+import { CommunityDetails } from '../../../models/CommunityDetails';
 import { AppError } from '../../../utils/appError';
 import { sendCommunityCredentials } from '../../../utils/email';
 
@@ -41,12 +41,16 @@ export class AdminService {
     await user.save();
 
     // 3. Create Community Profile
-    const community = new Community({
+    const community = new CommunityDetails({
       userId: user._id,
       communityName: request.communityName,
+      username: request.communityName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       description: 'Please update your description.',
+      phone: request.mobile,
+      email: request.email,
       city: 'To be updated',
       state: 'To be updated',
+      country: 'India',
       isVerified: true,
     });
     await community.save();
@@ -64,7 +68,7 @@ export class AdminService {
   public async rejectCommunity(requestId: string) {
     const request = await PartnerRequest.findById(requestId);
     if (!request) throw new AppError('Partner request not found', 404);
-    
+
     request.status = PartnerRequestStatus.REJECTED;
     await request.save();
     return { message: 'Community request rejected' };
